@@ -5,27 +5,38 @@
 // Bonus
 // Far comparire gli indirizzi email solamente quando sono stati tutti generati.
 
-function generateEmails() {
-    const emailListElement = document.getElementById('emailList');
+const{createApp}=Vue;
 
-    // Svuoto da email precedenti
-    emailListElement.innerHTML = '';
+const app=createApp({
+    data(){
+        return{
+            emails: []
+        }
+    },
+    methods:{
+        generateEmails() {
+            
+        
+            // Svuoto da email precedenti
+            this.emails = [];
+        
+            for (let i = 0; i < 10; i++) {
+        
+                // Utilizzo la libreria per effettuare la richiesta all'API
+                axios.get('https://flynn.boolean.careers/exercises/api/random/mail')
+                    .then(response => {
+                        const data = response.data;
 
-    for (let i = 0; i < 10; i++) {
-
-        // Utilizzo la libreria per effettuare la richiesta all'API
-        axios.get('https://flynn.boolean.careers/exercises/api/random/mail')
-            .then(response => {
-                const data = response.data;
-                if (data.success) {
-                    const email = data.response;
-                    const listItem = document.createElement('li');
-                    listItem.textContent = email;
-                    emailListElement.appendChild(listItem);
-                } else {
-                    console.error('Failed to fetch email');
-                }
-            })
-            .catch(error => console.error('Error fetching email:', error));
-    }
-}
+                        if (data.success) {
+                            const email = data.response;
+                            this.emails.push(email);
+                        } else {
+                            console.error('Failed to fetch email');
+                        }
+                    })
+                    .catch(error => console.error('Error fetching email:', error));
+            }
+        }
+        
+    },
+}).mount('#app');
